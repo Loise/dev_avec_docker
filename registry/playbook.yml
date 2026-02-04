@@ -15,7 +15,8 @@
         name:
           - docker.io
           - docker-compose-v2
-          - apache2-utils # pour htpasswd
+          - apache2-utils
+          - python3-passlib
         state: present
 
     - name: Ajout user au groupe docker
@@ -64,4 +65,13 @@
       args:
         chdir: "{{ project_dir }}"
 
-        
+    - name: Récupération du statut des conteneurs
+      command: docker compose ps
+      args:
+        chdir: "{{ project_dir }}"
+      register: compose_ps_output
+
+    - name: Affichage du statut final dans la console
+      debug:
+        msg: "{{ compose_ps_output.stdout_lines }}"
+
